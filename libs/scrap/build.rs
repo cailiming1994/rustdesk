@@ -152,7 +152,10 @@ fn generate_bindings(
         .rustified_enum(regex)
         .trust_clang_mangling(false)
         .layout_tests(false) // breaks 32/64-bit compat
-        .generate_comments(false); // comments have prefix /*!\
+        .generate_comments(false) // comments have prefix /*!\
+        // Disable warnings-as-errors for macOS builds with newer clang/SDK
+        .clang_arg("-Wno-error=unguarded-availability-new")
+        .clang_arg("-Wno-error=deprecated-declarations");
 
     for dir in include_paths {
         b = b.clang_arg(format!("-I{}", dir.display()));

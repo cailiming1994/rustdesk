@@ -647,6 +647,8 @@ jobs:
         with:
           channel: "stable"
           flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+          cache-dependency-path: ${{ github.workspace }}/flutter/pubspec.lock
 
       - name: Patch flutter
         run: |
@@ -682,7 +684,7 @@ jobs:
         uses: lukka/run-vcpkg@v11
         with:
           vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
-          doNotCache: false
+          doNotCache: ${{ matrix.job.target == 'aarch64-apple-darwin' }}
 
       - name: Install vcpkg dependencies
         run: |
@@ -702,6 +704,10 @@ jobs:
 
       - name: Show version information (Rust, cargo, Clang)
         shell: bash
+        env:
+          # Suppress clang warnings-as-errors for deprecated API usage
+          CFLAGS: "-Wno-error=unguarded-availability-new -Wno-error=deprecated-declarations"
+          CXXFLAGS: "-Wno-error=unguarded-availability-new -Wno-error=deprecated-declarations"
         run: |
           clang --version || true
           rustup -V
