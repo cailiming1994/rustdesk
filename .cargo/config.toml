@@ -5,21 +5,24 @@ rustflags = ["-C", "target-feature=+crt-static", "-C", "link-args=/NODEFAULTLIB:
 [target.'cfg(target_os="macos")']
 rustflags = [
     "-C", "link-args=-sectcreate __CGPreLoginApp __cgpreloginapp /dev/null",
-    # Suppress warnings about deprecated APIs and unguarded availability
-    "-A", "warnings",
 ]
 
 [target.x86_64-apple-darwin]
 rustflags = [
     "-C", "link-args=-sectcreate __CGPreLoginApp __cgpreloginapp /dev/null",
-    "-A", "warnings",
 ]
 
 [target.aarch64-apple-darwin]
 rustflags = [
     "-C", "link-args=-sectcreate __CGPreLoginApp __cgpreloginapp /dev/null",
-    "-A", "warnings",
 ]
+
+# Allow deprecated items on macOS due to SDK deprecation warnings
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 1
 #[target.'cfg(target_os="linux")']
 # glibc-static required, this may fix https://github.com/rustdesk/rustdesk/issues/9103, but I do not want this big change
 # this is unlikely to help also, because the other so files still use libc dynamically
