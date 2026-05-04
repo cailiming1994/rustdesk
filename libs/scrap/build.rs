@@ -155,7 +155,11 @@ fn generate_bindings(
         .generate_comments(false) // comments have prefix /*!\
         // Disable warnings-as-errors for macOS builds with newer clang/SDK
         .clang_arg("-Wno-error=unguarded-availability-new")
-        .clang_arg("-Wno-error=deprecated-declarations");
+        .clang_arg("-Wno-error=deprecated-declarations")
+        // Set deployment target to suppress availability warnings
+        .clang_arg("-mmacosx-version-min=10.15")
+        // Suppress all warnings to avoid issues
+        .clang_arg("-w");
 
     for dir in include_paths {
         b = b.clang_arg(format!("-I{}", dir.display()));
