@@ -705,9 +705,8 @@ jobs:
       - name: Show version information (Rust, cargo, Clang)
         shell: bash
         env:
-          # Suppress clang warnings-as-errors for deprecated API usage
-          CFLAGS: "-Wno-error=unguarded-availability-new -Wno-error=deprecated-declarations"
-          CXXFLAGS: "-Wno-error=unguarded-availability-new -Wno-error=deprecated-declarations"
+          # Suppress all deprecation warnings during compilation
+          RUSTFLAGS: "-A deprecated-in-macros -A deprecated"
         run: |
           clang --version || true
           rustup -V
@@ -717,6 +716,11 @@ jobs:
           rustc -V
 
       - name: Build rustdesk
+        env:
+          # Suppress deprecated/availability warnings for macOS builds with newer SDK
+          CFLAGS: "-Wno-error=unguarded-availability-new -Wno-error=deprecated-declarations -mmacosx-version-min=10.15"
+          CXXFLAGS: "-Wno-error=unguarded-availability-new -Wno-error=deprecated-declarations -mmacosx-version-min=10.15"
+          MACOSX_DEPLOYMENT_TARGET: "10.15"
         run: |
           if [ "${{ matrix.job.target }}" = "aarch64-apple-darwin" ]; then
             MIN_MACOS_VERSION="12.3"
