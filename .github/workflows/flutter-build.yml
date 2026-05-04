@@ -721,6 +721,8 @@ jobs:
           CFLAGS: "-Wno-error=unguarded-availability-new -Wno-error=deprecated-declarations -mmacosx-version-min=10.15"
           CXXFLAGS: "-Wno-error=unguarded-availability-new -Wno-error=deprecated-declarations -mmacosx-version-min=10.15"
           MACOSX_DEPLOYMENT_TARGET: "10.15"
+          # Suppress all warnings during Rust compilation
+          RUSTFLAGS: "-Awarnings -Adeprecated"
         run: |
           if [ "${{ matrix.job.target }}" = "aarch64-apple-darwin" ]; then
             MIN_MACOS_VERSION="12.3"
